@@ -5,6 +5,12 @@ Error Handling
 Tailwind Integration  
 Runtime Config
 
+# Changes from course:
+
+Allow enter press for input
+Add country after city
+Added refresh() call
+
 # Nuxt 3 Minimal Starter
 
 Look at the [nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.

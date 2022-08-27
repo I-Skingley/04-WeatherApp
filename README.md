@@ -7,9 +7,9 @@ Runtime Config
 
 # Changes from course:
 
-Allow enter press for input
-Add country after city
-Added refresh() call
+Allow enter press for input  
+Add country after city  
+Added refresh() call  
 
 # Nuxt 3 Minimal Starter
 

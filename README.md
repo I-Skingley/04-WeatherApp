@@ -1,9 +1,9 @@
 # Content:
 
-Composables: useFetch, useAsyncData, useCookie
+Composables: useFetch, useAsyncData, useCookie  
 Error Handling  
 Tailwind Integration  
-Runtime Config
+Runtime Config  
 
 # Changes from course:
 

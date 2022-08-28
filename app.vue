@@ -1,5 +1,8 @@
 <script setup lang="ts">
 const cookie = useCookie("city");
+const config = useRuntimeConfig();
+
+//console.log({ config });
 
 if (!cookie.value) cookie.value = "Lillehammer";
 
@@ -20,11 +23,17 @@ const { data: city, error } = useAsyncData(
 
     try {
       response = await $fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=${search.value}&units=metric&appid=c6bd29d73061465642ea8b1bc459b031`
+        `https://api.openweathermap.org/data/2.5/weather?q=${search.value}`,
+        {
+          params: {
+            units: "metric",
+            appid: config.APIKEY,
+          },
+        }
       );
 
       cookie.value = search.value;
-      
+
       const temp = response.main.temp;
 
       if (temp <= -10) {
@@ -40,9 +49,7 @@ const { data: city, error } = useAsyncData(
         background.value =
           "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3546&q=80";
       }
-
-    } catch (e) {
-    }
+    } catch (e) {}
 
     return response;
   },
@@ -51,15 +58,28 @@ const { data: city, error } = useAsyncData(
   }
 );
 
+let date = new Date();    //Note this is client side date, not accurate to the city
+let today = date.toLocaleDateString('en-GB',{
+  weekday: "long",
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+
+
 const handleClick = () => {
   const formattedSearch = input.value.trim().split(" ").join("+"); //removes whitespace and appends cities with multiple words in the name
   search.value = formattedSearch;
   input.value = "";
 };
+
+const goBack = () => {
+  search.value = cookie.value;
+};
 </script>
 
 <template>
-  <div class="h-screen overflow-hidden">
+  <div v-if="city" class="h-screen relative overflow-hidden">
     <!-- Dynamic background source -->
     <img :src="background" />
     <div class="absolute w-full h-full top-0 overlay" />
@@ -70,7 +90,7 @@ const handleClick = () => {
           <h1 class="text-7xl text-white">
             {{ city.name }} - {{ city.sys.country }}
           </h1>
-          <p class="font-extralight text-2xl text-white">Sunday Dec 9th</p>
+          <p class="font-extralight text-2xl text-white">{{today}}</p>
           <img
             :src="`https://openweathermap.org/img/wn/${city.weather[0].icon}@4x.png`"
             class="w-56 icon"
@@ -95,6 +115,12 @@ const handleClick = () => {
         </button>
       </div>
     </div>
+  </div>
+  <div v-else class="p-10">
+    <h1 class="text-7xl">Oops, we can't find that city</h1>
+    <button class="mt-5 bg-sky-400 px-10 w-50 text-white h-10" @click="goBack">
+      Go Back
+    </button>
   </div>
 </template>
 

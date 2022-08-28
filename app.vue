@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import { symlinkSync } from "fs";
+const cookie = useCookie("city");
 
-const search = ref("Lillehammer");
+if (!cookie.value) cookie.value = "Lillehammer";
+
+const search = ref(cookie.value);
 const input = ref("");
 const background = ref("");
 
@@ -14,25 +16,34 @@ const background = ref("");
 const { data: city, error } = useAsyncData(
   "city",
   async () => {
-    const response = await $fetch(
-      `https://api.openweathermap.org/data/2.5/weather?q=${search.value}&units=metric&appid=c6bd29d73061465642ea8b1bc459b031`
-    );
+    let response;
 
-    const temp = response.main.temp;
+    try {
+      response = await $fetch(
+        `https://api.openweathermap.org/data/2.5/weather?q=${search.value}&units=metric&appid=c6bd29d73061465642ea8b1bc459b031`
+      );
 
-    if (temp <= -10) {
-      background.value =
-        "https://images.unsplash.com/photo-1483664852095-d6cc6870702d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
-    } else if (temp > -10 && temp <= 0) {
-      background.value =
-        "https://images.unsplash.com/photo-1476820865390-c52aeebb9891?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
-    } else if (temp > 0 && temp <= 25) {
-      background.value =
-        "https://images.unsplash.com/photo-1560258018-c7db7645254e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=4032&q=80";
-    } else {
-      background.value =
-        "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3546&q=80";
+      cookie.value = search.value;
+      
+      const temp = response.main.temp;
+
+      if (temp <= -10) {
+        background.value =
+          "https://images.unsplash.com/photo-1483664852095-d6cc6870702d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
+      } else if (temp > -10 && temp <= 0) {
+        background.value =
+          "https://images.unsplash.com/photo-1476820865390-c52aeebb9891?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3540&q=80";
+      } else if (temp > 0 && temp <= 25) {
+        background.value =
+          "https://images.unsplash.com/photo-1560258018-c7db7645254e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=4032&q=80";
+      } else {
+        background.value =
+          "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=3546&q=80";
+      }
+
+    } catch (e) {
     }
+
     return response;
   },
   {

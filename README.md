@@ -1,6 +1,7 @@
 # Content:
 
 Composables: useFetch, useAsyncData, useCookie  
+Cookies  
 Error Handling  
 Tailwind Integration  
 Runtime Config  
@@ -9,6 +10,10 @@ Runtime Config
 
 Allow enter press for input  
 Add country after city  
+
+# Screenshot
+
+![Weather](/screenshots/weather.png)
 
 # Nuxt 3 Minimal Starter
 
